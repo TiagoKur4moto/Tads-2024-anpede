@@ -1,20 +1,28 @@
-
-
-//CAMADA DE ACESSO A DADOS
-
-
 package com.anpede.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.List;
 
-public class Associado implements Serializable{
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_associado")
+public class Associado implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	
-	private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;	
 	private String nome;
 	private String CPF;
 	private LocalDate dataNascimento;
@@ -22,12 +30,20 @@ public class Associado implements Serializable{
 	private String email;
 	private String endereco;
 	
-	public Associado() {
+	@OneToMany(mappedBy = "associado", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Emprestimo> emprestimo;
 	
+	@OneToMany(mappedBy = "associado", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<RetiradaFralda> retiradaFralda;
+	
+	public Associado() {
+		// TODO Auto-generated constructor stub
 	}
 
-	public Associado(long id, String nome, String cPF, LocalDate dataNascimento, String telefone, String email,
-			String endereco) {
+	public Associado(Long id, String nome, String cPF, LocalDate dataNascimento, String telefone, String email,
+			String endereco) {		
 		this.id = id;
 		this.nome = nome;
 		this.CPF = cPF;
@@ -36,12 +52,21 @@ public class Associado implements Serializable{
 		this.email = email;
 		this.endereco = endereco;
 	}
+		
+	
+	public List<RetiradaFralda> getRetiradaFralda() {
+		return retiradaFralda;
+	}
 
-	public long getId() {
+	public List<Emprestimo> getEmprestimo() {
+		return emprestimo;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -107,7 +132,13 @@ public class Associado implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Associado other = (Associado) obj;
-		return id == other.id;
-	}	
+		return Objects.equals(id, other.id);
+	}
+	
+	
+	
 	
 }
+
+
+
